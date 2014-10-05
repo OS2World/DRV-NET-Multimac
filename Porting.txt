@@ -1,0 +1,138 @@
+Porting drivers using MultiMac project.
+
+Description of the MultiMac Project
+===================================
+
+The MultiMac project is derived from the original nveth driver written
+by nickk. It has been modified and expanded to create a tool for easily
+creating new network drivers for OS/2.
+
+The MultiMac tools are specifically designed and organized for building
+and porting high-performance, reliable, native-OS/2, and OS/2 optimized
+NIC drivers. The MultiMac tools are definitely not "wrappers" and do not
+attempt to "emulate" Linux or Windows functions as that would produce
+larger, slower, and less reliable drivers.
+
+However, the MultiMac tools have been written in such a way as to make
+porting Linux drivers to OS/2 as easy as possible, while still retaining
+the native OS/2 driver structure for performance and reliability. Some
+coding and modifications to the original Linux driver code will always
+be requred as the driver structure is radically different between Linux
+and OS/2.
+
+All work for creating a new driver should be done entirely in the
+subdirectory for the specific driver. Do not modify any of the common
+files.
+
+Recent changes in the Linux driver model has made porting new drivers,
+and updating current drivers much more difficult. Porting new drivers
+now requires a much more thorough understanding of how the driver works,
+and rewriting more of the operating system interface routines than
+before.
+
+
+Steps to Port a Linux Driver using MultiMac
+===========================================
+
+1. Create a new subdirectory for your driver in the MultiMac project.
+
+2. Copy the Linux driver specific .C and .H files to the new directory.
+
+3. Create the MultiMac required functions.
+
+4. Make the necessary modifications.
+
+
+Necessary Modifications
+=======================
+
+* Buffer allocation and management routines must be changed
+  Because the Linux way of managing buffers differs so greatly from the way
+  that OS/2 manages buffers, attempting to emulate the Linux way of doing
+  things would be extremely wasteful and inefficient.  So the ring and
+  buffer management routines must be modified or rewritten. Remove any
+  references to skb's and replace them with the Multimac buffer management
+  routines.
+
+* Anything to do with napi must be removed.
+
+
+MultiMac Required Functions
+===========================
+
+These are the functions that your driver must export to the MultiMac
+tools. Look at the other drivers in the MultiMac project for examples
+on how to write the functions.
+
+
+int DriverCheckDevice(struct net_device *pDev);
+----------------------------------------------
+This function is called to determine if the driver supports the specified
+device. This function should return true (non-zero) if the driver supports
+the hardware and false (zero) if it does not. No driver or hardware
+initialization should be done in this function. This function may be
+called multiple times.
+
+
+int DriverInitAdapter(struct net_device *pDev);
+-----------------------------------------------
+This function is called to initialize the driver and the hardware. This
+function is called before any other function is called except for
+DriverCheckDevice() and DriverProcessParms().
+
+
+int NdisDriverStartIrq();
+-------------------------
+This function is called to setup the interrupt for the driver.
+
+
+int NdisDriverOpen();
+---------------------
+This function is called to start the driver operation.
+
+
+int NdisDriverProcessParms(struct ModCfg *pConfig);
+---------------------------------------------------
+This function is called to parse the parameters in the PROTOCOL.INI file.
+
+
+void DriverIOCtlGenMac(REQPACKET *pPacket);
+-------------------------------------------
+
+
+int DriverSuspend(void);
+------------------------
+
+This function is called when the system is going into the suspended state.
+
+
+int DriverResume(void);
+-----------------------
+
+This function is called when the system is waking up from the suspended
+state.
+
+
+void NdisDriverSetMcast(u32 wFlags);
+------------------------------------
+
+
+void sNdisDriverGetHwStats();
+-----------------------------
+
+
+void NdisDriverSetMac(char *pMscCurrStnAdr, unsigned long len);
+---------------------------------------------------------------
+
+
+int NdisDriverStartXmit(struct TxBufDesc *pDsc);
+------------------------------------------------
+
+
+int NdisDriverXferRx(u16 *pcopied, u16 frameOffset, struct TDBufDesc *pd);
+--------------------------------------------------------------------------
+
+
+int NdisDriverReleaseRx(u16 pos);
+---------------------------------
+

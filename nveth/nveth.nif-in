@@ -1,0 +1,74 @@
+[NVETH]
+ Type       = NDIS
+ Title      = "NVIDIA MAC Driver from Mensys BV"
+ Version    = 0.0.0
+ DriverName = NVETH$
+ XPORTS     = NETBEUI, LANDD
+
+[File]
+ Name     = NVETH.OS2
+ Path     = \IBMCOM\MACS
+
+[MODE]
+Display    = "Medium Type"
+Type       = String
+StrLength  = 10
+Set        = "10HALF", "10FULL", "100HALF", "100FULL", "1000HALF", "1000FULL"
+Optional   = Yes
+Editable   = Yes
+Help       = "This parameter specifies the link speed and connection type.
+If not specified, it defaults to autodetection."
+
+[OPTIMIZE]
+Display    = "Use throughput optimization"
+Type       = String
+Strlength  = 4
+Default    = "YES"
+Set        = "YES", "NO"
+Optional   = yes
+Editable   = yes
+Help       = "This parameter specifies whatever driver must fullfill throughput
+optimization. If not specified, it defaults to YES."
+
+[TIMER]
+Display    = "Use HW timer"
+Type       = String
+Strlength  = 4
+Default    = "NO"
+Set        = "YES", "NO"
+Optional   = yes
+Editable   = yes
+Help       = "This parameter specifies whatever driver must activate NVIDIA
+hardware IRQ timer. If not specified, it defaults to NO."
+
+[LINK_TIMER]
+Display    = "Use link timer"
+Type       = String
+Strlength  = 4
+Default    = "NO"
+Set        = "YES", "NO"
+Optional   = yes
+Editable   = yes
+Help       = "This parameter specifies whatever driver must periodically test
+link. If not specified, it defaults to NO."
+
+[RXCHAIN]
+Display    = "Use receive chain instead of receive lookahead"
+Type       = String
+Strlength  = 4
+Default    = "YES"
+Set        = "YES", "NO"
+Optional   = yes
+Editable   = yes
+Help       = "Use receive chain instead of receive lookahead. If not specified,
+it defaults to YES."
+
+[NETADDRESS]
+Display    = "Network Adapter Address"
+Type       = hexstring
+Strlength  = 12
+Optional   = yes
+Editable   = yes
+Help       = "This parameter overrides the network address of the network
+ adapter card.	The value of this parameter is a hexadecimal string of
+ 12 digits.  The address must be unique among all other network adapter addresses on the network."

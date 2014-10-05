@@ -1,0 +1,170 @@
+# This source is the part of the generic ndis driver for OS/2
+# Copyright (C) 2013 David Azarewicz david@88watts.net
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# To build this driver you must have installed :
+#    OpenWatcom
+#    An updated DDK or the MiniDDK
+#    DRV32KIT
+#    LCL32KIT
+#    OS/2 Toolkit
+#
+# This is a generic build makefile for all the drivers.
+# You should not need to edit this file.
+
+!ifndef %ROOT # if not defined in the environment
+!error ROOT must be set in the environment. Run SETENV.CMD
+!endif
+
+!ifndef %WATCOM # if not defined in the environment
+!error WATCOM must be set in the environment. Run SETENV.CMD
+!endif
+
+!ifndef %DDK # if not defined in the environment
+!error DDK must be set in the environment. Run SETENV.CMD
+!endif
+
+!ifndef %DRV32KIT # if not defined in the environment
+!error DRV32KIT must be set in the environment. Run SETENV.CMD
+!endif
+
+!ifndef %LCL32KIT # if not defined in the environment
+!error LCL32KIT must be set in the environment. Run SETENV.CMD
+!endif
+
+DRV32KIT=$(%DRV32KIT)
+LCL32KIT=$(%LCL32KIT)
+DDK=$(%DDK)
+WATCOM=$(%WATCOM)
+ROOT=$(%ROOT)
+TOOLS=$(ROOT)\tools
+COMMON=$(ROOT)\common32
+CURDIR=$+$(%cwd)$-
+
+%INCLUDE=$(ROOT)\$(TARGET);$(COMMON);$(DRV32KIT);$(LCL32KIT);$(WATCOM)\H;$(DDK)\base\h;$(DDK)\base32\h;
+%PATH=$(DRV32KIT);$(DDK)\base\TOOLS;$(WATCOM)\BINP;$(WATCOM)\BINW;$(WATCOM)\BINB;$(%PATH)
+
+!ifndef VENDOR                  # if not defined on wmake command line
+!ifdef %VENDOR                  # if defined in environment
+VENDOR = $(%VENDOR)             # use value from environment
+!else
+VENDOR=Mensys BV
+!endif
+!endif
+
+OBJDIR=$(ROOT)\$(TARGET)\retail
+
+PROJECTSTR=$(PROJECT)
+
+!ifdef TRACING
+DBG_CFLAGS=-DTRACING
+OBJDIR=$(ROOT)\$(TARGET)\trace
+PROJECTSTR=$(PROJECTSTR) (TRACE)
+!endif
+
+!ifdef DEBUG
+DBG_CFLAGS=-DDEBUG
+OBJDIR=$(ROOT)\$(TARGET)\debug
+PROJECTSTR=$(PROJECTSTR) (DEBUG)
+!endif
+
+!include $(ROOT)\$(TARGET)\$(TARGET).inc
+
+.ERASE
+.SUFFIXES
+.SUFFIXES: .lst .obj .c .cpp .asm .lib .def
+
+CFLAGS=-q -bt=os2 -6s -olinar -s -ze -zl -zq -zfp -zgp -ms -wx -zp1 -ecs -za99 $(DBG_CFLAGS)
+
+CC=wcc386
+AFLAGS=-q -6p -bt=os2 -wx -d1
+ASM=wasm
+LINK=wlink
+
+BASEOBJS = $(OBJDIR)\strat.obj $(OBJDIR)\driver.obj
+
+#since BEGINLIBPATH doesn't work, we load the dll's manually
+!ifdef __LOADDLL__
+!loaddll wcc386 $(WATCOM)\binp\dll\wccd386.dll
+!loaddll wlink $(WATCOM)\binp\dll\wlinkd.dll
+!loaddll wlib $(WATCOM)\binp\dll\wlibd.dll
+!endif
+
+.before
+  @$(TOOLS)\CreatePath.cmd $(OBJDIR)
+
+.c: $(ROOT)\$(TARGET);$(COMMON);
+.c.obj: .AUTODEPEND
+  $(CC) $(CFLAGS) -fo=$(OBJDIR)\ $[@
+  wdis -l $(OBJDIR)\$^&.obj
+
+.asm: $(ROOT)\$(TARGET);$(COMMON);
+.asm.obj: .AUTODEPEND
+  $(ASM) $(AFLAGS) -fo=$(OBJDIR)\ $[@
+
+all: $(OBJDIR)\$(DRIVERNAME).os2 $(OBJDIR)\$(DRIVERNAME).sym $(OBJDIR)\$(DRIVERNAME).nif
+
+$(BASEOBJS): .AUTODEPEND $(ROOT)\$(TARGET)\$(TARGET).inc
+
+$(OBJS): .AUTODEPEND $(ROOT)\$(TARGET)\$(TARGET).inc
+
+$(OBJDIR)\$(DRIVERNAME).os2: $(ROOT)\$(TARGET)\version.h $(BASEOBJS) $(OBJS) $(TOOLS)\makefile32.drv $(DRV32KIT)\Drv32.lib
+  @%create $^*.lrf
+  @%append $^*.lrf name $(OBJDIR)\$(DRIVERNAME).os2
+  @%append $^*.lrf format os2 lx phys
+  @%append $^*.lrf option mixed1632,nostub,align=4
+  @%append $^*.lrf option quiet,int,verbose,caseexact,eliminate sort global
+  @%append $^*.lrf option stack=0
+  @%append $^*.lrf segment _TEXT PRELOAD CONFORMING IOPL DYNAMIC
+  @%append $^*.lrf segment TYPE DATA SHARED
+  @%append $^*.lrf file $(DRV32KIT)\Drv32.lib(header)
+  @for %f in ($(BASEOBJS)) do @%append $^*.lrf file %f
+  @for %f in ($(OBJS)) do @%append $^*.lrf file %f
+  @%append $^*.lrf library $(DRV32KIT)\Drv32.lib
+  @%append $^*.lrf library $(LCL32KIT)\Lcl32.lib
+  @%append $^*.lrf library $(DDK)\base32\lib\kee.lib
+  @%append $^*.lrf option map=$(OBJDIR)\$(DRIVERNAME).map
+  $(LINK) @$^*.lrf
+  @!del $^*.lrf
+
+$(ROOT)\$(TARGET)\version.h: $(ROOT)\$(TARGET)\$(TARGET).inc $(TOOLS)\makefile32.drv .ALWAYS
+  @%create $^@
+  @%append $^@ //This file is automatically created by tools\makefile32.drv
+  @%append $^@ $#undef VERSION
+! ifeqi FIXPACK beta
+  @%append $^@ $#define VERSION " $(VERSION)-BETA "
+! else
+  @%append $^@ $#define VERSION " $(VERSION) "
+! endif
+  @%append $^@ $#define DNAME "$(PROJECTSTR)"
+  @%append $^@ $#define DVENDOR "$(VENDOR)"
+  @%append $^@ $#define DFILE "$(DRIVERNAME).os2"
+  @%append $^@ $#define DEV_NAME "$(DRIVERNAME)$$"
+  @%append $^@ $#define ADAPTER_KEY "$(DRIVERNAME)_$# "
+  @%append $^@ $#define MSGFILE "$(DRIVERNAME).MSG"
+  @$(TOOLS)\AddToFile.cmd $^@,$#define DDATE,DATEL
+  @$(TOOLS)\AddToFile.cmd $^@,$#define BLDLEVEL,BLDLEVEL2,$(VENDOR),$(VERSION),$(PROJECTSTR),$(FIXPACK)
+
+$(OBJDIR)\$(DRIVERNAME).sym: $(OBJDIR)\$(DRIVERNAME).os2
+  @$(TOOLS)\wat2map.cmd $(OBJDIR)\$(DRIVERNAME).map $(OBJDIR)\$(DRIVERNAME).ma1
+  @cd $(OBJDIR)
+  @mapsym $(DRIVERNAME).ma1
+  @del $(DRIVERNAME).ma1
+  @cd $(CURDIR)
+
+$(OBJDIR)\$(DRIVERNAME).nif: $(ROOT)\$(TARGET)\$(DRIVERNAME).nif-in
+  @$(TOOLS)\makenif.cmd $[@ $^@ $(VERSION)
+

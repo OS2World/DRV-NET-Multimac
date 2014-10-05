@@ -1,0 +1,39 @@
+[R8169]
+ Type       = NDIS
+ Title      = "Realtek Gigabit 8111/8168/8169 driver (MultiMac32)"
+ Version    = 0.0.0
+ DriverName = R8169$
+ XPORTS     = NETBEUI, LANDD
+
+[File]
+ Name     = R8169.OS2
+ Path     = \IBMCOM\MACS
+
+[MODE]
+Display    = "Medium Type"
+Type       = String
+StrLength  = 10
+Set        = "10HALF", "10FULL", "100HALF", "100FULL", "1000FULL"
+Optional   = Yes
+Editable   = Yes
+Help       = "This parameter specifies the link speed and connection type.
+If not specified, it defaults to autodetection."
+
+[RXCHAIN]
+Display    = "Use receive chain instead of receive lookahead"
+Type       = String
+Strlength  = 4
+Set        = "YES", "NO"
+Optional   = yes
+Editable   = yes
+Help       = "Use receive chain instead of receive lookahead"
+
+[NETADDRESS]
+Display    = "Network Adapter Address"
+Type       = hexstring
+Strlength  = 12
+Optional   = yes
+Editable   = yes
+Help       = "This parameter overrides the network address of the network
+ adapter card.	The value of this parameter is a hexadecimal string of
+ 12 digits.  The address must be unique among all other network adapter addresses on the network."

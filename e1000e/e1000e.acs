@@ -1,0 +1,14 @@
+;Numbers 1-9 are reserved for common code and must be the same for all drivers
+;Numbers 10-up are for individual drivers
+E1E
+E1E0001I: E1000E NDIS device driver %1
+E1E0002I: E1000E Can't connect to Protocol Manager
+E1E0003I: E1000E
+E1E0004I: E1000E No supported hardware was found.
+E1E0005I: E1000E Invalid parameter in PROTOCOL.INI
+E1E0006?:
+E1E0007?:
+E1E0008?:
+E1E0009?:
+E1E0010?:
+E1E0011I: E1000E Hardware detected: %1.

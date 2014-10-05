@@ -1,0 +1,198 @@
+MODNAME=E1000E.OS2
+MAJOR=0x00F8
+MAXDATALENGTH = 512
+
+TRACE	MINOR=0x0001,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: BLDLEVEL string",
+	FMT="BldLevel: %S",
+
+TRACE	MINOR=0x0002,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: Strategy",
+	FMT="Command: %W",
+
+TRACE	MINOR=0x0003,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: IOCtl",
+	FMT="Category: %W",
+	FMT="Function: %W",
+	
+TRACE	MINOR=0x0004,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: SetPacketFilter",
+	FMT="Flags: %W",
+
+TRACE	MINOR=0x0005,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: Command Line",
+	FMT="CmdLine: %S",
+	
+TRACE	MINOR=0x0010,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: RxProcess beg",
+	FMT="IX: %W",
+	FMT="RDH: %D",
+	FMT="RDT: %D",
+
+TRACE	MINOR=0x8010,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: RxProcess end",
+
+TRACE	MINOR=0x0011,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: Rx packet",
+	FMT="%U",
+
+TRACE	MINOR=0x0012,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverXferRx beg",
+
+TRACE	MINOR=0x0013,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverReleaseRx beg",
+	FMT="IX: %W",
+
+TRACE	MINOR=0x0014,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: Rx packet info",
+	FMT="IX: %W",
+	FMT="Len: %W",
+	FMT="Flags: %D",
+
+TRACE	MINOR=0x0020,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: IrqHandler beg",
+	FMT="Status: %D",
+
+TRACE	MINOR=0x0030,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: Tx Queued",
+	FMT="IX: %W",
+	FMT="Len: %W",
+	FMT="flaglen_lo: %D",
+
+TRACE	MINOR=0x0031,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: Tx packet",
+	FMT="%U",
+
+TRACE	MINOR=0x0040,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: Set Interrupt",
+	FMT="Irq: %W",
+
+TRACE	MINOR=0x0041,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetMcast beg",
+	FMT="Count: %W",
+
+TRACE	MINOR=0x0044,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: MacAddress",
+	FMT="MacAddress: %B%B%B%B%B%B",
+
+TRACE	MINOR=0x0045,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverOpen beg",
+
+TRACE	MINOR=0x8045,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverOpen end",
+
+TRACE	MINOR=0x0046,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetMac",
+	FMT="MacAddress: %B%B%B%B%B%B",
+	
+TRACE	MINOR=0x0047,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSuspend beg",
+	
+TRACE	MINOR=0x0048,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverResume beg",
+	
+TRACE	MINOR=0x0050,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup beg",
+	FMT="Vendor:Device: %W:%W",
+	FMT="driver_data: %W",
+		
+TRACE	MINOR=0x0051,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup",
+	FMT="Base Address: %D",
+	FMT="flags: %W",
+	FMT="mac: %W",
+		
+TRACE	MINOR=0x0052,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup",
+	FMT="Flash Address: %D",
+
+TRACE	MINOR=0x0053,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup SW init",
+		
+TRACE	MINOR=0x0054,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup",
+	FMT="SW init error: %W",
+
+TRACE	MINOR=0x0055,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup get_variants",
+		
+TRACE	MINOR=0x0056,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup get_bus_info",
+	
+TRACE	MINOR=0x0057,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup check_reset_block",
+		
+TRACE	MINOR=0x0058,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup reset_hw",
+		
+TRACE	MINOR=0x0059,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup eprom_checks",
+		
+TRACE	MINOR=0x8050,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: DriverSetup end",
+
+TRACE	MINOR=0x0085,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: e1000_acquire_swflag_ich8lan beg",
+	FMT="swflag_mutex: %W",
+
+TRACE	MINOR=0x8085,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: e1000_acquire_swflag_ich8lan end",
+	FMT="swflag_mutex: %W",
+
+TRACE	MINOR=0x0074,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: e1000_post_phy_reset_ich8lan beg",
+
+TRACE	MINOR=0x0060,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: e1000_reset_hw_ich8lan beg",
+
+TRACE	MINOR=0x0065,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: e1000_reset_hw_ich8lan acquiring swflag",
+	FMT="ctrl: %D",
+
+TRACE	MINOR=0x0070,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: e1000_get_cfg_done_ich8lan beg",
+
+TRACE	MINOR=0x0082,	
+	TP=@STATIC,
+	DESC="E1000E.OS2: __e1000e_read_phy_reg_igp beg",
+	FMT="locked: %W",
+

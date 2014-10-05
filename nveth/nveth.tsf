@@ -1,0 +1,127 @@
+MODNAME=NVETH.OS2
+MAJOR=0x00F8
+MAXDATALENGTH = 512
+
+TRACE	MINOR=0x0001,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: BLDLEVEL string",
+	FMT="BldLevel: %S",
+	
+TRACE	MINOR=0x0002,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: Strategy",
+	FMT="Command: %W",
+
+TRACE	MINOR=0x0003,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: IOCtl",
+	FMT="Category: %W",
+	FMT="Function: %W",
+	
+TRACE	MINOR=0x0004,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: SetPacketFilter",
+	FMT="Flags: %W",
+
+TRACE	MINOR=0x0005,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: Command Line",
+	FMT="CmdLine: %S",
+	
+TRACE	MINOR=0x0010,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: RxProcess beg",
+	FMT="IX: %W",
+	FMT="flaglen: %D",
+
+TRACE	MINOR=0x8010,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: RxProcess end",
+
+TRACE	MINOR=0x0011,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: Rx packet",
+	FMT="%U",
+
+TRACE	MINOR=0x0012,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverXferRx beg",
+
+TRACE	MINOR=0x0013,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverReleaseRx beg",
+	FMT="IX: %W",
+
+TRACE	MINOR=0x0014,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: Rx packet info",
+	FMT="IX: %W",
+	FMT="Len: %W",
+	FMT="Flags: %D",
+
+TRACE	MINOR=0x0020,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: IrqHandler loop",
+	FMT="Status: %D",
+
+TRACE	MINOR=0x0030,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: Tx Queued",
+	FMT="IX: %W",
+	FMT="Len: %W",
+	FMT="flaglen: %D",
+
+TRACE	MINOR=0x0031,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: Tx packet",
+	FMT="%U",
+
+TRACE	MINOR=0x0040,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: Set Interrupt",
+	FMT="Irq: %W",
+
+TRACE	MINOR=0x0041,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverSetMcast beg",
+	FMT="Count: %W",
+	FMT="Flags: %W",
+
+TRACE	MINOR=0x0044,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: MacAddress",
+	FMT="MacAddress: %B%B%B%B%B%B",
+
+TRACE	MINOR=0x0045,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverOpen beg",
+
+TRACE	MINOR=0x8045,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverOpen end",
+
+TRACE	MINOR=0x0046,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverSetMac",
+	FMT="MacAddress: %B%B%B%B%B%B",
+	
+TRACE	MINOR=0x0047,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverSuspend beg",
+	
+TRACE	MINOR=0x0048,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverResume beg",
+	
+TRACE	MINOR=0x0050,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverSetup beg",
+	FMT="Vendor:Device: %W:%W",
+	FMT="driver_data: %W",
+
+TRACE	MINOR=0x0051,	
+	TP=@STATIC,
+	DESC="NVETH.OS2: DriverSetup",
+	FMT="Base Address: %D",
+	FMT="flags: %W",
+

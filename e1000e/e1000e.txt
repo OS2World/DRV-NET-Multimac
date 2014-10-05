@@ -1,0 +1,199 @@
+Intel PRO/1000 PCIe NIC Driver for OS/2
+Copyright (C) 2012 Mensys B.V.
+Copyright (C) 2013 David Azarewicz david@88watts.net
+
+
+Info
+====
+
+This is an NDIS driver for Intel Gigabit PCI-Express LAN adapters.
+This driver is based on the source code of e1000e Linux kernel module
+and of nveth NVIDIA NIC driver for OS/2 developed by nickk.
+The driver released under GNU General Public License (GPL). See the
+'LICENSE' file for details.
+
+This driver supports the following devices.
+
+82571EB, 82571PT, 82572EI, 82573V, 82573E, 82573L, 82574L, 82583V, 80003ES2LAN,
+82562V, 82562G, 82562GT, 82566DM, 82566DC, 82566MC, 82566MM, 82567V-3, 82562V-2,
+82562G-2, 82562GT-2, 82566DM-2, 82566DC-2, 82567LM-4, 82567LF, 82567LM, 82567V,
+82567LM-2, 82567LF-2, 82567V-2, 82567LM-3, 82567LF-3, 82577LM, 82577LC, 82578DM, 82578D.
+
+More specifically, only the following device IDs are supported. All are Vendor ID 8086.
+ 1049, 104A, 104B, 104C, 104D, 105E, 105F, 1060, 107D, 107E, 107F, 108B,
+ 108C, 1096, 1098, 109A, 10A4, 10A5, 10B9, 10BA, 10BB, 10BC, 10BD, 10BF,
+ 10C0, 10C2, 10C3, 10C4, 10C5, 10CB, 10CC, 10CD, 10CE, 10D3, 10D5, 10D9,
+ 10DA, 10DE, 10DF, 10E5, 10EA, 10EB, 10EF, 10F0, 10F5, 10F6, 1501, 1502,
+ 1503, 150C, 294C
+
+Use the PCI.EXE command to find the Vendor ID and Device ID of your hardware.
+First check the Vendor ID. If the Vendor ID of your hardare is not 8086, then
+your hardware is not supported by this driver. Then check the Device ID. If
+the Device ID is not in the list above, then your hardware is not supported
+by this driver.  If the Vendor ID of your hardware is 8086, and the Device ID
+is listed above, then this driver should work.
+
+
+Installation
+============
+
+You can install the network driver during operating system installation.
+Or you can install the driver using the Warpin package.
+
+After you install the files, run mpts.exe and set up the network driver as
+usual. Then reboot.
+
+The distribution package also includes a version of the driver in the trace
+directory. This version has tracing enabled for debugging purposes. You
+would only use the tracing driver if you are debugging a problem in coordination
+with the developer. See http://svn.ecomstation.nl/multimac for more information.
+
+
+Command line options
+====================
+
+/An
+
+Selects a specific PCI adapter to use. If not specified, the driver will use the
+first unused PCI adapter that is supported by the driver. For example, /A1 will
+select the second PCI adapter that is supported by the driver. If the specified
+PCI adapter does not exist, the driver will produce an error. /A0 = E1000E$,
+/A1 = E1000E2$, /A2 = E1000E3$, etc.
+
+/Q
+
+Turns off the version banner when the driver loads.
+
+
+Options only in the trace build
+-------------------------------
+
+/Tn
+
+Sets the minor trace number for controlling trace output. Only applies
+to the trace build of the driver. Ignored in the retail version.
+
+
+Options only in the debug build
+-------------------------------
+
+The debug build is not included in the distribution package and is only
+for developer use.
+
+/Dn
+
+Sets the debug output level to n. The default is 5. Only applies
+to the debug build of the driver. Ignored in the retail version.
+
+/COM=n
+
+Sets the serial port for debug output. Valid values are 1 and 2
+for COM1 and COM2, or the port address. The default is no serial
+port output. Only applies to the debug build of the driver.
+Ignored in the retail version.
+
+
+PROTOCOL.INI Options
+====================
+
+There are the following switches you can tune the driver work:
+
+MODE
+
+Intel Gigabit PCIe network adapters support the following operation modes
+
+    10HALF    -  half duplex operation at 10 Mb/s
+    10FULL    -  full duplex operation at 10 Mb/s
+    100HALF   -  half duplex operation at 100 Mb/s
+    100FULL   -  full duplex operation at 100 Mb/s
+    1000FULL  -  full duplex operation at 1000 Mb/s
+
+The default mode is Auto-Negotiation.
+
+RXCHAIN
+
+The way of transferring received packets to the protocol drivers: receive
+chain and lookahead. The recommended setting is the receive chain.
+
+NETADDRESS
+
+Specifies the MAC address to use instead of the vendor supplied unique
+address. Must be exactly 12 hex digits long.
+Example: NETADDRESS = "4061865F3888"
+
+
+Bugs
+====
+
+Open a ticket at: http://svn.ecomstation.nl/multimac
+
+Please read the section on "Support and Submitting Tickets" before opening
+a new ticket.
+
+
+Licence
+=======
+
+Its GPL, see LICENSE
+
+
+Source Code
+===========
+
+The source code is available at: http://svn.ecomstation.nl/multimac
+
+
+
+Change log
+==========
+
+0.2.5 22-Jan-2014 - David Azarewicz
+  Fixed a problem loading multiple instances of the driver.
+
+0.2.4 13-Oct-2013 - David Azarewicz
+  Converted to use the Drv16 kit.
+  Fixed some errors in the NDIS setup.
+  No functional changes.
+
+0.2.3 24-Apr-2012 - David Azarewicz
+  Changes due to MultiMac restructuring
+  Added logging functionality
+  Added promiscuous mode capability
+
+0.2.2 08-Apr-2012 - David Azarewicz
+  Misc debugging changes
+  New packet buffer allocation routines
+  Reentry issue fixed
+  Tracing support added
+  Fixed a locked resource issue
+
+0.2.1 - David Azarewicz
+  Minor fixes due to MultiMac restructuring
+
+0.2.0 - David Azarewicz
+  Resynced with the sources from the Linux 3.2.4 driver.
+
+0.1.7 - David Azarewicz
+  fixed suspend/resume
+  Added support for ACPI suspend/resume
+  removed the -r compiler switch
+
+0.1.6 - David Azarewicz
+  Fixed PCI config space save/restore for suspend/resume
+
+0.1.5 - David Azarewicz
+  Added NETADDRESS support
+
+0.1.4 - David Azarewicz
+  Added /Q switch. When present on the command line, indicates quiet mode and does
+  not output normal messages. Error messages are still output normally.
+
+0.1.3 - David Azarewicz
+  Moved to the MultiMac project.
+
+0.1.2
+  Fixes were made for ICH8LAN chipsets support.
+
+0.1.1
+  Initial release.
+

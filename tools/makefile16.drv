@@ -1,0 +1,185 @@
+# This source is the part of the generic ndis driver for OS/2
+# Copyright (C) 2010-2012 Mensys
+# Copyright (C) 2010-2013 David Azarewicz
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# To build this driver you must have installed :
+#    OpenWatcom
+#    DDK
+#    OS/2 Toolkit
+#
+# This is a generic build makefile for all the drivers.
+# You should not need to edit this file.
+
+!ifndef %ROOT # if not defined in the environment
+!error ROOT must be set in the environment. Run SETENV.CMD
+!endif
+
+!ifndef %WATCOM # if not defined in the environment
+!error WATCOM must be set in the environment. Run SETENV.CMD
+!endif
+
+!ifndef %DDK # if not defined in the environment
+!error DDK must be set in the environment. Run SETENV.CMD
+!endif
+
+!ifndef %DRV16KIT # if not defined in the environment
+!error DRV16KIT must be set in the environment. Run SETENV.CMD
+!endif
+
+DRV16KIT=$(%DRV16KIT)
+DDK=$(%DDK)
+WATCOM=$(%WATCOM)
+ROOT=$(%ROOT)
+TOOLS=$(ROOT)\tools
+COMMON=$(ROOT)\common16
+CURDIR=$+$(%cwd)$-
+
+%INCLUDE=$(ROOT)\$(TARGET);$(COMMON);$(DRV16KIT);$(DDK)\base\h;$(WATCOM)\H;$(WATCOM)\H\OS2;
+%PATH=$(DDK)\base\tools;$(WATCOM)\BINP;$(WATCOM)\BINW;$(%PATH)
+
+!ifndef VENDOR                  # if not defined on wmake command line
+!ifdef %VENDOR                  # if defined in environment
+VENDOR = $(%VENDOR)             # use value from environment
+!else
+VENDOR=Mensys BV
+!endif
+!endif
+
+OBJDIR=$(ROOT)\$(TARGET)\retail
+
+PROJECTSTR=$(PROJECT)
+
+!ifdef TRACING
+DBG_CFLAGS=-DTRACING
+OBJDIR=$(ROOT)\$(TARGET)\trace
+PROJECTSTR=$(PROJECTSTR) (TRACE)
+!endif
+
+!ifdef DEBUG
+DBG_CFLAGS=-DDEBUG
+OBJDIR=$(ROOT)\$(TARGET)\debug
+PROJECTSTR=$(PROJECTSTR) (DEBUG)
+!endif
+
+!include $(ROOT)\$(TARGET)\$(TARGET).inc
+
+.ERASE
+.SUFFIXES
+.SUFFIXES: .lst .obj .c .cpp .asm .lib .def
+
+# -5  = Pentium instructions
+# -d1{+} line number debugging info
+# -o m=in-line 80x87 instructions
+#    r=pipline optimization
+#    l=loop optimization
+#    i=Certain library function in-line
+# -r  = save/restore segment registers - 2011-07-28 SHL removed to avoid traps
+# -s  = remove stack overflow checks
+# -wx = set warning level to max
+# -xd = disable exception handling
+# -zp = set minimal structure packing
+# -ze =
+# -zdp = peg DS register to DGROUP
+# -zff = allow use FS register (default)
+# -zgf = allow use GS register (default)
+# -zl  = supress library file names in object file
+# -zq  = operate quietly
+# -zu  = do not assume SS=DGROUP
+# -zm  = place each function in separate segment
+# -p -fo
+# CFLAGS=-bt=os2 -d1 -6 -omrli -s -wx -zp=1 -ze -zdp -zff -zgf -zu -zm -zq -zl -ei $(DBG_CFLAGS)
+CFLAGS=-bt=os2 -d1 -6 -omrli -s -wx -zp=1 -zu -zq -zl -ei -zff -zgf -za99 $(DBG_CFLAGS)
+# -p -fo
+CC      = wcc
+AFLAGS  = -q
+ASM     = wasm
+LINK    = wlink
+
+BASEOBJS = $(OBJDIR)\driver.obj $(OBJDIR)\strat.obj
+
+#since BEGINLIBPATH doesn't work, we load the dll's manually
+!ifdef __LOADDLL__
+!loaddll wcc $(WATCOM)\binp\dll\wccd.dll
+!loaddll wlink $(WATCOM)\binp\dll\wlinkd.dll
+!loaddll wlib $(WATCOM)\binp\dll\wlibd.dll
+!endif
+
+.before
+    @$(TOOLS)\CreatePath.cmd $(OBJDIR)
+
+.def: $(ROOT)\$(TARGET);$(COMMON);
+.def.lib: .AUTODEPEND
+  wlib -q -n -b -p=16 $^@ @$[@
+
+.c: $(ROOT)\$(TARGET);$(COMMON);
+.c.obj: .AUTODEPEND
+  $(CC) $(CFLAGS) -fo=$(OBJDIR)\ $[@
+
+.asm: $(ROOT)\$(TARGET);$(COMMON);
+.asm.obj: .AUTODEPEND
+  $(ASM) $(AFLAGS) -fo=$(OBJDIR)\ $[@
+
+all: $(OBJDIR)\$(DRIVERNAME).os2 $(OBJDIR)\$(DRIVERNAME).sym $(OBJDIR)\$(DRIVERNAME).nif
+
+$(BASEOBJS): .AUTODEPEND $(ROOT)\$(TARGET)\$(TARGET).inc
+
+$(OBJS): .AUTODEPEND $(ROOT)\$(TARGET)\$(TARGET).inc
+
+$(OBJDIR)\$(DRIVERNAME).os2: $(ROOT)\$(TARGET)\version.h $(BASEOBJS) $(OBJS) $(TOOLS)\makefile16.drv $(DRV16KIT)\Drv16.lib
+  @%create $^*.lrf
+  @%append $^*.lrf system os2 physdevice
+  @%append $^*.lrf option quiet,map,int,verbose,caseexact,eliminate sort global
+  @%append $^*.lrf name $(OBJDIR)\$(DRIVERNAME).os2
+  @%append $^*.lrf file $(DRV16KIT)\Drv16.lib(header)
+  @for %f in ($(BASEOBJS)) do @%append $^*.lrf file %f
+  @for %f in ($(OBJS)) do @%append $^*.lrf file %f
+  @%append $^*.lrf library $(DRV16KIT)\Drv16.lib
+  @%append $^*.lrf library $(DDK)\BASE\lib\rmcalls.lib
+  @%append $^*.lrf library $(DDK)\BASE\lib\apmcalls.lib
+  @%append $^*.lrf library $(DDK)\base\lib\os2286.lib
+  @%append $^*.lrf option map=$(OBJDIR)\$(DRIVERNAME).map
+  $(LINK) @$^*.lrf
+  @!del $^*.lrf
+
+$(ROOT)\$(TARGET)\version.h: $(ROOT)\$(TARGET)\$(TARGET).inc $(TOOLS)\makefile16.drv .ALWAYS
+  @%create $^@
+  @%append $^@ //This file is automatically created by tools\makefile16.drv
+  @%append $^@ $#undef VERSION
+!   ifeqi FIXPACK test
+  @%append $^@ $#define VERSION " $(VERSION)-test "
+!   else
+  @%append $^@ $#define VERSION " $(VERSION) "
+!   endif
+  @%append $^@ $#define DNAME "$(PROJECTSTR)"
+  @%append $^@ $#define DVENDOR "$(VENDOR)"
+  @%append $^@ $#define DFILE "$(DRIVERNAME).os2"
+  @%append $^@ $#define DEV_NAME "$(DRIVERNAME)$$"
+  @%append $^@ $#define ADAPTER_KEY "$(DRIVERNAME)_$# "
+  @%append $^@ $#define MSGFILE "$(DRIVERNAME).MSG"
+  @$(TOOLS)\AddToFile.cmd $^@,$#define DDATE,DATEL
+  @$(TOOLS)\AddToFile.cmd $^@,$#define BLDLEVEL,BLDLEVEL2,$(VENDOR),$(VERSION),$(PROJECTSTR),$(FIXPACK)
+
+$(OBJDIR)\$(DRIVERNAME).sym: $(OBJDIR)\$(DRIVERNAME).os2
+  @$(TOOLS)\wat2map.cmd $(OBJDIR)\$(DRIVERNAME).map $(OBJDIR)\$(DRIVERNAME).ma1
+  @cd $(OBJDIR)
+  @mapsym $(DRIVERNAME).ma1
+  @!del $(DRIVERNAME).ma1
+  @cd $(CURDIR)
+
+$(OBJDIR)\$(DRIVERNAME).nif: $(ROOT)\$(TARGET)\$(DRIVERNAME).nif-in
+  @$(TOOLS)\makenif.cmd $[@ $^@ $(VERSION)
+

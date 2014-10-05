@@ -1,0 +1,40 @@
+/* setenv.cmd
+ *
+ * This script defines and setup the build environment for building the MultiMac drivers
+ *
+ * 24-Mar-2012: DAZ created.
+ *
+ * You'll have to edit this to set the correct paths.
+ * if you already have these set in your environment, this command file will use what you already
+ * have setup.
+ */
+
+WATCOM=EnvVar_Get_If('WATCOM','E:\Watcom'); /* the base of the Watcom installation on your system. */
+DDK=EnvVar_Get_If('DDK','e:\MiniDDK'); /* the base of the DDK */
+DRV16KIT=EnvVar_Get_If('DRV16KIT','f:\Drv16kit');
+DRV32KIT=EnvVar_Get_If('DRV32KIT','f:\Drv32kit');
+LCL32KIT=EnvVar_Get_If('LCL32KIT','f:\Lcl32kit');
+
+/* you should not need to change anything below this line */
+
+ROOT=DIRECTORY();
+
+ENV='OS2ENVIRONMENT';
+rc=VALUE('ROOT', ROOT, ENV);
+rc=VALUE('WATCOM', WATCOM, ENV);
+rc=VALUE('DDK', DDK, ENV);
+rc=VALUE('DRV16KIT', DRV16KIT, ENV);
+rc=VALUE('DRV32KIT', DRV32KIT, ENV);
+rc=VALUE('LCL32KIT', LCL32KIT, ENV);
+exit;
+
+/*
+ * Returns value of sEnvVar from environment if set or returns default value.
+ */
+EnvVar_Get_If: procedure
+  parse arg sEnvVar, sDefault;
+  s = value(sEnvVar,, 'OS2ENVIRONMENT')
+  if s == '' then
+    s = sDefault;
+  return s;
+

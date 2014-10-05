@@ -1,0 +1,177 @@
+MODNAME=R8169.OS2
+MAJOR=0x00F8
+MAXDATALENGTH = 512
+
+TRACE	MINOR=0x0001,	
+	TP=@STATIC,
+	DESC="R8169.OS2: BLDLEVEL string",
+	FMT="BldLevel: %S",
+	
+TRACE	MINOR=0x0002,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Strategy",
+	FMT="Command: %W",
+
+TRACE	MINOR=0x0003,	
+	TP=@STATIC,
+	DESC="R8169.OS2: IOCtl",
+	FMT="Category: %W",
+	FMT="Function: %W",
+	
+TRACE	MINOR=0x0004,	
+	TP=@STATIC,
+	DESC="R8169.OS2: SetPacketFilter",
+	FMT="Flags: %W",
+
+TRACE	MINOR=0x0005,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Command Line",
+	FMT="CmdLine: %S",
+	
+TRACE	MINOR=0x0006,	
+	TP=@STATIC,
+	DESC="R8169.OS2: request_firmware",
+	FMT="FileName: %S",
+
+TRACE	MINOR=0x0010,	
+	TP=@STATIC,
+	DESC="R8169.OS2: RxProcess beg",
+	FMT="IX: %W",
+	FMT="opts1: %D",
+
+TRACE	MINOR=0x8010,	
+	TP=@STATIC,
+	DESC="R8169.OS2: RxProcess end",
+
+TRACE	MINOR=0x0011,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Rx packet",
+	FMT="%U",
+
+TRACE	MINOR=0x0012,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverXferRx",
+
+TRACE	MINOR=0x0013,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverReleaseRx",
+	FMT="IX: %W",
+
+TRACE	MINOR=0x0014,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Rx packet info",
+	FMT="IX: %W",
+	FMT="Len: %W",
+	FMT="Flags: %D",
+
+TRACE	MINOR=0x001F,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Rx Error",
+	FMT="IX: %W",
+	FMT="Len: %W",
+	FMT="Status: %D",
+
+TRACE	MINOR=0x0020,	
+	TP=@STATIC,
+	DESC="R8169.OS2: IrqHandler beg",
+	FMT="Status: %W",
+
+TRACE	MINOR=0x0021,	
+	TP=@STATIC,
+	DESC="R8169.OS2: IrqHandler Loop",
+	FMT="Status: %W",
+
+TRACE	MINOR=0x8021,	
+	TP=@STATIC,
+	DESC="R8169.OS2: IrqHandler end",
+
+TRACE	MINOR=0x002F,	
+	TP=@STATIC,
+	DESC="R8169.OS2: IrqHandler Error",
+	FMT="Status: %W",
+
+TRACE	MINOR=0x0030,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Tx Queued",
+	FMT="IX: %W",
+	FMT="Len: %W",
+	FMT="opts1: %D",
+
+TRACE	MINOR=0x0031,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Tx packet",
+	FMT="%U",
+
+TRACE	MINOR=0x0040,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Set Interrupt",
+	FMT="Irq: %W",
+
+TRACE	MINOR=0x0041,	
+	TP=@STATIC,
+	DESC="R8169.OS2: Set Mcast",
+	FMT="Count: %W",
+	FMT="Flags: %W",
+
+TRACE	MINOR=0x0042,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverOpen",
+
+TRACE	MINOR=0x0043,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverSetup",
+	FMT="Vendor:Device: %W:%W",
+	FMT="driver_data: %W",
+		
+TRACE	MINOR=0x0044,	
+	TP=@STATIC,
+	DESC="R8169.OS2: MacAddress",
+	FMT="MacAddress: %B%B%B%B%B%B",
+
+TRACE	MINOR=0x0045,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverSetup",
+	FMT="mac_version: %W",
+		
+TRACE	MINOR=0x0046,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverSetMac",
+	FMT="MacAddress: %B%B%B%B%B%B",
+
+TRACE	MINOR=0x0047,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverSuspend beg",
+	
+TRACE	MINOR=0x0048,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverResume beg",
+
+TRACE	MINOR=0x0049,	
+	TP=@STATIC,
+	DESC="R8169.OS2: get_mac_version",
+	FMT="reg: %D",
+	FMT="mac_version: %W",
+		
+TRACE	MINOR=0x004A,	
+	TP=@STATIC,
+	DESC="R8169.OS2: DriverSetMcast",
+	FMT="Multicast Address: %B%B%B%B%B%B",
+
+TRACE	MINOR=0x0050,	
+	TP=@STATIC,
+	DESC="R8169.OS2: rtl_fw_format_ok failed",
+
+TRACE	MINOR=0x0051,	
+	TP=@STATIC,
+	DESC="R8169.OS2: rtl_check_firmware end",
+	FMT="rc: %W",
+
+TRACE	MINOR=0x0052,	
+	TP=@STATIC,
+	DESC="R8169.OS2: rtl_phy_write_fw beg",
+
+TRACE	MINOR=0x0053,	
+	TP=@STATIC,
+	DESC="R8169.OS2: rtl_request_firmware",
+	FMT="firmware name: %S",
+

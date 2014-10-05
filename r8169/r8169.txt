@@ -1,0 +1,150 @@
+Realtek Gigabit PCIe NIC Driver for OS/2
+Copyright (C) 2014 David Azarewicz
+
+
+Info
+====
+
+This is an NDIS driver for Realtek Gigabit PCI-Express LAN adapters.
+This driver is based on the source code of r8169 Linux kernel module.
+
+This driver supports the following devices.
+
+    RTL8169, RTL8169s, RTL8110s, RTL8169sb/8110sb,
+    RTL8169sc/8110sc RTL8102e, RTL8101e, RTL8168b/8111b,
+    RTL8100e, RTL8168cp/8111cp, RTL8168c/8111c, RTL8168d/8111d,
+    RTL8168dp/8111dp, RTL8105e, RTL8168e/8111e, RTL8168evl/8111evl,
+    RTL8168f/8111f, RTL8402, RTL8411, RTL8106e, RTL8168g/8111g
+
+These correspond to the following Vendor:Device numbers:
+
+    10EC:8129, 10EC:8136, 10EC:8167, 10EC:8168, 10EC:8169,
+    1186:4300, 1186:4302, 1259:C107, 16EC:0116,
+    and certain subsets of 1737:1032 and 0001:8168)
+
+Use the PCI.EXE command to find the Vendor ID and Device ID of your
+hardware. If the Vendor ID and the Device ID is listed above, then this
+driver should work.
+
+
+License
+=======
+
+The binary distribution of this driver is licensed for use on eComStation
+version 1.2 or higher.
+
+
+Installation
+============
+
+You can install the network driver during operating system installation.
+Or you can install the driver using the Warpin package.
+
+After you install the files, run mpts.exe and set up the network driver as
+usual. Then reboot.
+
+The distribution package also includes a version of the driver in the trace
+directory. This version has tracing enabled for debugging purposes. You
+would only use the tracing driver if you are debugging a problem in coordination
+with the developer. See http://svn.ecomstation.nl/multimac for more information.
+
+If your hardware requires a firmware file and you re-install the same or an
+updated WPI package when the driver is loaded, you will get an error that the
+installer cannot overwrite the firmware file. You can safely skip updating
+this file since the firmware typically does not change.
+
+
+Command line options
+====================
+
+/An
+
+Selects a specific PCI adapter to use. If not specified, the driver will use the
+first unused PCI adapter that is supported by the driver. For example, /A1 will
+select the second PCI adapter that is supported by the driver. If the specified
+PCI adapter does not exist, the driver will produce an error. /A0 = R8169$,
+/A1 = R81692$, /A2 = R81693$, etc.
+
+/V
+
+Turns on the version banner when the driver loads.
+
+/Fdirectory
+
+Specifies the location of the rtl_nic directory that contains the firmware files.
+The default \IBMCOM.
+
+
+Options only in the trace build
+-------------------------------
+
+/Tn
+
+Sets the minor trace number for controlling trace output. Only applies
+to the trace build of the driver. Ignored in the retail version.
+
+
+Options only in the debug build
+-------------------------------
+
+The debug build is not included in the distribution package and is only
+for developer use.
+
+/Dn
+
+Sets the debug output level to n. The default is 5. Only applies
+to the debug build of the driver. Ignored in the retail version.
+
+/On
+
+Sets the serial port for debug output. Valid values are 1 and 2
+for COM1 and COM2. The default is no serial port output. Only
+applies to the debug build of the driver. Ignored in the retail
+version.
+
+
+PROTOCOL.INI Options
+====================
+
+There are the following switches you can tune the driver work:
+
+MODE
+
+Intel Gigabit PCIe network adapters support the following operation modes
+
+    10HALF    -  half duplex operation at 10 Mb/s
+    10FULL    -  full duplex operation at 10 Mb/s
+    100HALF   -  half duplex operation at 100 Mb/s
+    100FULL   -  full duplex operation at 100 Mb/s
+    1000FULL  -  full duplex operation at 1000 Mb/s
+
+The default mode is Auto-Negotiation.
+
+RXCHAIN
+
+The way of transferring received packets to the protocol drivers: receive
+chain and lookahead. The recommended setting is the receive chain which is
+the default.
+
+NETADDRESS
+
+Specifies the MAC address to use instead of the vendor supplied unique
+address. Must be exactly 12 hex digits long.
+Example: NETADDRESS = "4061865F3888"
+
+
+Bugs
+====
+
+Open a ticket at: http://svn.ecomstation.nl/multimac
+
+Please read the section on "Support and Submitting Tickets" before opening
+a new ticket.
+
+
+Change Log
+==========
+
+v.1.0.0 16-Feb-2014 - David Azarewicz
+  Initial version based on v3.13 Linux source.
+

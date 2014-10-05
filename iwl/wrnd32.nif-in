@@ -1,0 +1,11 @@
+[IWL]
+ Type       = NDIS
+ Title      = "Intel Wi-Fi PCIe MAC Driver"
+ Version    = 0.0.3
+ DriverName = WRND32$
+ XPORTS     = NETBEUI, LANDD
+
+[File]
+ Name     = IWL.OS2
+ Path     = \IBMCOM\MACS
+

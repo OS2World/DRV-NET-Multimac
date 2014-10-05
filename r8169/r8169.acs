@@ -1,0 +1,17 @@
+;Numbers 1-9 are reserved for common code and must be the same for all drivers
+;Numbers 10-up are for individual drivers
+RTL
+RTL0001I: R8169 NDIS device driver %1
+RTL0002I: R8169 Error: Can't connect to Protocol Manager
+RTL0003I: R8169
+RTL0004I: R8169 Error: No supported hardware was found.
+RTL0005I: R8169 Error: Invalid parameter in PROTOCOL.INI
+RTL0006?:
+RTL0007?:
+RTL0008?:
+RTL0009?:
+RTL0010I: R8169 Warning: Unable to load firmware %1.
+RTL0011I: R8169 Hardware detected: %1.
+RTL0012I: R8169 Warning: Hardware (EPROM) has invalid MAC address.
+RTL0013I: R8169 Error: Cannot initialize driver with invalid MAC address.
+

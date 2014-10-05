@@ -1,0 +1,14 @@
+;Numbers 1-9 are reserved for common code and must be the same for all drivers
+;Numbers 10-up are for individual drivers
+NVE
+NVE0001I: NVETH NDIS device driver %1
+NVE0002I: NVETH Can't connect to Protocol Manager
+NVE0003I: NVETH
+NVE0004I: NVETH No supported hardware was found.
+NVE0005I: NVETH Invalid parameter in PROTOCOL.INI
+NVE0006?:
+NVE0007?:
+NVE0008?:
+NVE0009?:
+NVE0010?:
+NVE0011I: NVETH Hardware detected: %1.

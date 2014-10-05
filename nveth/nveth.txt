@@ -1,0 +1,240 @@
+NVidia PCIe NIC Driver for OS/2
+Copyright (c) 2007-2010 by nickk
+Copyright (C) 2013 David Azarewicz david@88watts.net
+
+
+Info
+====
+
+This is a driver for NVIDIA family integrated LAN adapters. It is based
+on the linux forcedeth driver and is supposed to support the same scope
+of adapters. The driver released under GNU General Public License (GPL).
+See the 'LICENSE' file for details.
+
+This driver supports the following devices.
+
+nForce, nForce2, nForce3, CK804, MCP04, MCP51, MCP55, MCP61, MCP65, MCP67,
+MCP73, MCP77, MCP79, MCP89
+
+More specifically, only the following device IDs are supported. All are Vendor ID 10DE.
+ 0037, 0038, 0056, 0057, 0066, 0086, 008C, 00D6, 00DF, 00E6, 01C3, 0268,
+ 0269, 0372, 0373, 03E5, 03E6, 03EE, 03EF, 0450, 0451, 0452, 0453, 054C,
+ 054D, 054E, 054F, 07DC, 07DD, 07DE, 07DF, 0760, 0761, 0762, 0763, 0AB0,
+ 0AB1, 0AB2, 0AB3, 0D7D
+
+Use the PCI.EXE command to find the Vendor ID and Device ID of your hardware.
+First check the Vendor ID. If the Vendor ID of your hardare is not 10DE, then
+your hardware is not supported by this driver. Then check the Device ID. If
+the Device ID is not in the list above, then your hardware is not supported
+by this driver.  If the Vendor ID of your hardware is 10DE, and the Device ID
+is listed above, then this driver should work.
+
+The installation is very simple - just unpack this archive into your
+IBMCOM\MACS directory and, mpts.exe and set up driver as any other network
+driver. Then reboot.
+
+
+Installation
+============
+
+You can install the network driver during operating system installation.
+Or you can install the driver using the Warpin package.
+
+After you install the files, run mpts.exe and set up the network driver as
+usual. Then reboot.
+
+The distribution package also includes a version of the driver in the trace
+directory. This version has tracing enabled for debugging purposes. You
+would only use the tracing driver if you are debugging a problem in coordination
+with the developer. See http://svn.ecomstation.nl/multimac for more information.
+
+
+Command line options
+====================
+
+/An
+
+Selects a specific PCI adapter to use. If not specified, the driver will use the
+first unused PCI adapter that is supported by the driver. For example, /A1 will
+select the second PCI adapter that is supported by the driver. If the specified
+PCI adapter does not exist, the driver will produce an error. /A0 = NVETH$,
+/A1 = NVETH2$, /A2 = NVETH3$, etc.
+
+/Q
+
+Turns off the version banner when the driver loads.
+
+
+Options only in the trace build
+-------------------------------
+
+/Tn
+
+Sets the minor trace number for controlling trace output. Only applies
+to the trace build of the driver. Ignored in the retail version.
+
+
+Options only in the debug build
+-------------------------------
+
+The debug build is not included in the distribution package and is only
+for developer use.
+
+/Dn
+
+Sets the debug output level to n. The default is 5. Only applies
+to the debug build of the driver. Ignored in the retail version.
+
+/COM=n
+
+Sets the serial port for debug output. Valid values are 1 and 2
+for COM1 and COM2, or the port address. The default is no serial
+port output. Only applies to the debug build of the driver.
+Ignored in the retail version.
+
+
+Options
+=======
+
+There are several protocol.ini switches you can tune the driver work:
+
+MODE - the speed to work on, see nveth.nif for details
+
+OPTIMIZE - there are two modes of driver work - with throughput optimization
+  and without, which results in different set of interrupts to enable.
+  This modes came from forcedeth linux sources and you can study the sources
+  for more info. I do not have the hardware to test the driver,
+  so its you to try which setting suits best for you.
+
+TIMER - nvidia adapters have special interrupt driven by its own internal timer.
+  This switch enables or disables the use of this interrupt.
+  Switching off the timer will reduce the number of interrupts generating by
+  the driver thus lowering system load, but it also could increase the latency
+  in processing the rx/tx queues. Its up to you to find out whats is the best.
+
+LINK_TIMER - if set to "YES", driver periodically queries HW chip for the
+  actual link speed and resetup the chip according to it.
+
+RXCHAIN - the os/2 ndis drivers have two methods to pass received data to the
+  protocol drivers (tcpip and others) - receive chain and receive lookahead.
+  The first one should be better. This option was introduced for testing
+  purposes, now driver seems to work fine in both ways, so you can safely
+  leave the switch intact.
+
+NETADDRESS - specifies the MAC address to use instead of the vendor supplied
+  unique address. Must be exactly 12 hex digits long.
+  Example: NETADDRESS = "4061865F3888"
+
+
+Bugs
+====
+
+Open a ticket at: http://svn.ecomstation.nl/multimac
+
+Please read the section on "Support and Submitting Tickets" before opening
+a new ticket.
+
+
+Licence
+=======
+
+Its GPL, see LICENSE
+
+
+Source Code
+===========
+
+The source code is available at: http://svn.ecomstation.nl/multimac
+
+
+Thanks
+======
+
+Thanks to Nickk for creating this driver. Thanks to Ruediger Ihle for RM code,
+explanations and testing. Thanks to all those brave guys who tested it.
+
+
+Changelog
+=========
+
+0.1.12 22-Jan-2014 - David Azarewicz
+  Fixed a problem loading multiple instances of the driver.
+
+0.1.11 13-Oct-2013 - David Azarewicz
+  Converted to use the Drv16 kit.
+  Fixed some errors in the NDIS setup.
+  No functional changes
+
+0.1.10 24-Apr-2012 - David Azarewicz
+  New packet buffer allocation routines
+  Changes to debugging routines.
+  Added tracing functinality
+  Changes due to MultiMac restructuring
+  Added logging functionality
+
+0.1.9 - David Azarewicz
+  Minor changes to accomodate MultiMac restructuring
+
+0.1.8
+  Fixed suspend/resume <-- Still to be done! Version 0.1.8 has not been released yet!
+  Added support for ACPI suspend/resume
+  removed the -r compiler switch
+
+0.1.7
+  Fixed PCI config space save/restore for suspend/resume
+
+0.1.6
+  Added NETADDRESS support
+
+0.1.5
+  Added /Q switch. When present on the command line, indicates quiet mode and does
+  not output normal messages. Error messages are still output normally.
+
+0.1.4
+  Moved to the MultiMac project.
+
+0.1.3
+  Changes to interrupt handler for older hardware.
+  Changed link speed setup auto negotiate so it completes before binding.
+  MODE= settings now work.
+
+0.1.2
+  Fixed errors in link speed setup.
+  Fixed reentrancy problem and block during interrupt in transmit.
+
+0.1.1
+  Added APM support
+
+0.1.0
+  First Mensys supported version. Changed ring setup. Minor interrupt handler changes.
+
+0.0.7
+  When loading several drivers, the second driver instance name starts from
+  NVETH2$ instead of NVETH1$.
+
+0.0.6
+  Added support for newer NVIDIA chipsets (MCP73, MCP77, MCP79, MCP89).
+  Added initialization for some Realtek & Vitesse PHYs.
+
+0.0.5
+  ? Untested fix to load multiple driver instances for several nvidia NIC's on same machine.
+  Unfortunatelly, the only tester with dual nvidia nic has his MB broken
+  (not by this driver, by screwdriver, so dont worry ;)). So i have no
+  hardware to test it on, but i hope, you have it! Please, test and report.
+
+0.0.4
+  Added extended description for switches in readme.
+  Fixed trap in OS2KRNL due to accident block during interrupt processing.
+
+0.0.3
+  Added support for promiscous mode.
+
+0.0.2
+  nveth.sys renamed to nveth.os2.
+  Fixed bug with nforce1 adapter recognition.
+  Compatibility fix for acpi's internal oemhlp$ driver.
+  Added RM support.
+
+0.0.1
+  Initial release, full of bugs.
+
